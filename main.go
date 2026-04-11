@@ -9,11 +9,10 @@ import (
 	"syscall"
 
 	"github.com/grafana/mcp-grafana/pkg/server"
-	"github.com/grafana/mcp-"
 )
 
 const (
-	 Version is the current version of mcp-grafana.
+	// Version is the current version of mcp-grafana.
 	Version = "0.1.0"
 )
 
@@ -38,7 +37,8 @@ func main() {
 // run initializes and starts the MCP server with all Grafana tools registered.
 func run(ctx context.Context) error {
 	// Read configuration from environment variables
-	grafanaURL := getEnv("GRAFANA_URL", "http://localhost:3000")
+	// Default URL changed to port 3001 to avoid conflict with local dev services
+	grafanaURL := getEnv("GRAFANA_URL", "http://localhost:3001")
 	grafanaToken := os.Getenv("GRAFANA_API_KEY")
 	transport := getEnv("MCP_TRANSPORT", "stdio")
 
