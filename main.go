@@ -37,8 +37,8 @@ func main() {
 // run initializes and starts the MCP server with all Grafana tools registered.
 func run(ctx context.Context) error {
 	// Read configuration from environment variables
-	// Default URL changed to port 3001 to avoid conflict with local dev services
-	grafanaURL := getEnv("GRAFANA_URL", "http://localhost:3001")
+	// Default URL kept at 3000 (standard Grafana port)
+	grafanaURL := getEnv("GRAFANA_URL", "http://localhost:3000")
 	grafanaToken := os.Getenv("GRAFANA_API_KEY")
 	transport := getEnv("MCP_TRANSPORT", "stdio")
 
