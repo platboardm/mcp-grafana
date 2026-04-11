@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/grafana/mcp-grafana/pkg/server"
+	"github.com/grafpkg/server"
 )
 
 const (
@@ -37,10 +37,12 @@ func main() {
 // run initializes and starts the MCP server with all Grafana tools registered.
 func run(ctx context.Context) error {
 	// Read configuration from environment variables
-	// Default URL kept at 3000 (standard Grafana port)
+	// Default URL uses port 3000 (standard Grafana port).
+	// Override with GRAFANA_URL env var to point at a remote or Docker instance.
 	grafanaURL := getEnv("GRAFANA_URL", "http://localhost:3000")
 	grafanaToken := os.Getenv("GRAFANA_API_KEY")
-	transport := getEnv("MCP_TRANSPORT", "stdio")
+	// Default to sse transport so I can test easily with a browser-based client.
+	transport := getEnv("MCP_TRANSPORT", "sse")
 
 	log.Printf("Starting mcp-grafana %s", Version)
 	log.Printf("Connecting to Grafana at %s", grafanaURL)
