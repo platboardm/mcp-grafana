@@ -13,15 +13,11 @@ import (
 
 const (
 	// Version is the current version of mcp-grafana.
-	Version = "0.1.0"
-)
-
-func main() {
+	Version = "0.1.nfunc main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// Handle OS signals for graceful shutdown
-	sigCh := make(chan os.Signal, 1)
+	// Handle OS signals for gracigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		sig := <-sigCh
@@ -41,10 +37,9 @@ func run(ctx context.Context) error {
 	// Override with GRAFANA_URL env var to point at a remote or Docker instance.
 	grafanaURL := getEnv("GRAFANA_URL", "http://localhost:3000")
 	grafanaToken := os.Getenv("GRAFANA_API_KEY")
-	// Default to stdio transport for compatibility with most MCP clients
-	// (e.g. Claude Desktop, VS Code extensions). Use MCP_TRANSPORT=sse for
-	// browser-based or HTTP clients.
-	transport := getEnv("MCP_TRANSPORT", "stdio")
+	// Default to sse transport since I primarily use this with browser-based clients.
+	// Switch to MCP_TRANSPORT=stdio for Claude Desktop or VS Code extension usage.
+	transport := getEnv("MCP_TRANSPORT", "sse")
 
 	log.Printf("Starting mcp-grafana %s", Version)
 	log.Printf("Connecting to Grafana at %s", grafanaURL)
