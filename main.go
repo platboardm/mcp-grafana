@@ -47,15 +47,20 @@ func run(ctx context.Context) error {
 	// transport to "sse" here. Set MCP_TRANSPORT=stdio to restore original behavior.
 	transport := getEnv("MCP_TRANSPORT", "sse")
 
+	// Default SSE port is 8080; override with MCP_PORT if something else is already
+	// occupying that port on my machine (e.g. a local dev server).
+	port := getEnv("MCP_PORT", "8080")
+
 	log.Printf("Starting mcp-grafana %s", Version)
 	log.Printf("Connecting to Grafana at %s", grafanaURL)
-	log.Printf("Transport: %s | Token configured: %v", transport, grafanaToken != "")
+	log.Printf("Transport: %s | Port: %s | Token configured: %v", transport, port, grafanaToken != "")
 
 	// Build server configuration
 	cfg := server.Config{
 		GrafanaURL:   grafanaURL,
 		GrafanaToken: grafanaToken,
 		Transport:    transport,
+		Port:         port,
 		Version:      Version,
 	}
 
