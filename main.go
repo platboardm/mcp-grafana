@@ -49,6 +49,7 @@ func run(ctx context.Context) error {
 
 	log.Printf("Starting mcp-grafana %s", Version)
 	log.Printf("Connecting to Grafana at %s", grafanaURL)
+	log.Printf("Transport: %s | Token configured: %v", transport, grafanaToken != "")
 
 	// Build server configuration
 	cfg := server.Config{
