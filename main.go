@@ -22,7 +22,7 @@ func main() {
 
 	// Handle OS signals for graceful shutdown
 	sigCh := make(chan os.Signal, 1)
-	signal.Notify(sigCh, os.)
+	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		sig := <-sigCh
 		log.Printf("Received signal %s, shutting down...", sig)
