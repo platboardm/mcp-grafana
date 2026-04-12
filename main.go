@@ -18,7 +18,6 @@ const (
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 
 	// Handle OS signals for graceful shutdown
 	sigCh := make(chan os.Signal, 1)
@@ -47,9 +46,9 @@ func run(ctx context.Context) error {
 	// transport to "sse" here. Set MCP_TRANSPORT=stdio to restore original behavior.
 	transport := getEnv("MCP_TRANSPORT", "sse")
 
-	// Default SSE port is 8080; override with MCP_PORT if something else is already
-	// occupying that port on my machine (e.g. a local dev server).
-	port := getEnv("MCP_PORT", "8080")
+	// Default SSE port changed from 8080 to 3333 to avoid conflicts with other
+	// local dev servers I typically run (e.g. webpack dev server on 8080).
+	port := getEnv("MCP_PORT", "3333")
 
 	log.Printf("Starting mcp-grafana %s", Version)
 	log.Printf("Connecting to Grafana at %s", grafanaURL)
