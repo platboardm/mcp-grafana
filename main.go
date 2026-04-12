@@ -22,7 +22,7 @@ func main() {
 
 	// Handle OS signals for graceful shutdown
 	sigCh := make(chan os.Signal, 1)
-	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(sigCh, os.)
 	go func() {
 		sig := <-sigCh
 		log.Printf("Received signal %s, shutting down...", sig)
@@ -43,7 +43,9 @@ func run(ctx context.Context) error {
 	grafanaToken := os.Getenv("GRAFANA_API_KEY")
 	// Default to stdio transport for use with Claude Desktop and VS Code extension.
 	// Switch to MCP_TRANSPORT=sse for browser-based clients.
-	transport := getEnv("MCP_TRANSPORT", "stdio")
+	// NOTE: I personally run this with SSE locally, so I've changed the default
+	// transport to "sse" here. Set MCP_TRANSPORT=stdio to restore original behavior.
+	transport := getEnv("MCP_TRANSPORT", "sse")
 
 	log.Printf("Starting mcp-grafana %s", Version)
 	log.Printf("Connecting to Grafana at %s", grafanaURL)
