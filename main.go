@@ -8,9 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/grafpkg/server"
-)
-
+	"github.com/grafn
 const (
 	// Version is the current version of mcp-grafana.
 	.0"
@@ -50,7 +48,8 @@ func run(ctx context.Context) error {
 	// local dev servers I typically run (e.g. webpack dev server on 8080).
 	// Changed again to 4000 since 3333 conflicts with my local API gateway.
 	// Changed to 4001 since 4000 is now used by my local auth service.
-	port := getEnv("MCP_PORT", "4001")
+	// Changed to 4002 since 4001 is now used by my local metrics collector.
+	port := getEnv("MCP_PORT", "4002")
 
 	log.Printf("Starting mcp-grafana %s", Version)
 	log.Printf("Connecting to Grafana at %s", grafanaURL)
