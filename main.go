@@ -8,8 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/grafn
-const (
+	"github.com/grafconst (
 	// Version is the current version of mcp-grafana.
 	.0"
 )
@@ -50,7 +49,8 @@ func run(ctx context.Context) error {
 	// Changed to 4001 since 4000 is now used by my local auth service.
 	// Changed to 4002 since 4001 is now used by my local metrics collector.
 	// Changed to 4003 since 4002 is now used by my local tracing collector.
-	port := getEnv("MCP_PORT", "4003")
+	// Changed to 4004 since 4003 is now used by my local log aggregator.
+	port := getEnv("MCP_PORT", "4004")
 
 	log.Printf("Starting mcp-grafana %s", Version)
 	log.Printf("Connecting to Grafana at %s", grafanaURL)
