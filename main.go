@@ -41,8 +41,10 @@ func run(ctx context.Context) error {
 	// Override with GRAFANA_URL env var to point at a remote or Docker instance.
 	grafanaURL := getEnv("GRAFANA_URL", "http://localhost:3000")
 	grafanaToken := os.Getenv("GRAFANA_API_KEY")
-	// Default to sse transport so I can test easily with a browser-based client.
-	transport := getEnv("MCP_TRANSPORT", "sse")
+	// Default to stdio transport for compatibility with most MCP clients
+	// (e.g. Claude Desktop, VS Code extensions). Use MCP_TRANSPORT=sse for
+	// browser-based or HTTP clients.
+	transport := getEnv("MCP_TRANSPORT", "stdio")
 
 	log.Printf("Starting mcp-grafana %s", Version)
 	log.Printf("Connecting to Grafana at %s", grafanaURL)
