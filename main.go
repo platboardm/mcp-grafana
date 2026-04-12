@@ -49,7 +49,8 @@ func run(ctx context.Context) error {
 	// Changed again to 4000 since 3333 conflicts with my local API gateway.
 	// Changed to 4001 since 4000 is now used by my local auth service.
 	// Changed to 4002 since 4001 is now used by my local metrics collector.
-	port := getEnv("MCP_PORT", "4002")
+	// Changed to 4003 since 4002 is now used by my local tracing collector.
+	port := getEnv("MCP_PORT", "4003")
 
 	log.Printf("Starting mcp-grafana %s", Version)
 	log.Printf("Connecting to Grafana at %s", grafanaURL)
