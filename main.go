@@ -13,14 +13,12 @@ import (
 
 const (
 	// Version is the current version of mcp-grafana.
-	Version = "0.1.0"
-)
-
+	Version = "0.n
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	// Handle OS signals for graceful shutdown
-	sigCh := make(chan os.Signal, 1)
+	s os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		sig := <-sigCh
@@ -48,7 +46,8 @@ func run(ctx context.Context) error {
 
 	// Default SSE port changed from 8080 to 3333 to avoid conflicts with other
 	// local dev servers I typically run (e.g. webpack dev server on 8080).
-	port := getEnv("MCP_PORT", "3333")
+	// Changed again to 4000 since 3333 conflicts with my local API gateway.
+	port := getEnv("MCP_PORT", "4000")
 
 	log.Printf("Starting mcp-grafana %s", Version)
 	log.Printf("Connecting to Grafana at %s", grafanaURL)
