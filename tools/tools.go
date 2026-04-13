@@ -24,14 +24,15 @@ type GrafanaClient struct {
 }
 
 // NewGrafanaClient creates a new GrafanaClient with the provided base URL and API key.
-// Uses a 60-second timeout to better handle large dashboards and slower remote
-// instances (increased from the original 30s default).
+// Uses a 90-second timeout to better handle large dashboards and slower remote
+// instances. Increased from 60s as I was seeing timeouts on my home Grafana
+// instance when fetching dashboards with many panels.
 func NewGrafanaClient(baseURL, apiKey string) *GrafanaClient {
 	return &GrafanaClient{
 		BaseURL: strings.TrimRight(baseURL, "/"),
 		APIKey:  apiKey,
 		HTTPClient: &http.Client{
-			Timeout: 60 * time.Second,
+			Timeout: 90 * time.Second,
 		},
 	}
 }
@@ -94,15 +95,4 @@ func registerSearchDashboards(s *server.MCPServer, client *GrafanaClient) {
 
 			var result interface{}
 			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return mcp.NewToolResultError(fmt.Sprintf("decoding response: %v", err)), nil
-			}
-
-			out, err := json.MarshalIndent(result, "", "  ")
-			if err != nil {
-				return mcp.NewToolResultError(fmt.Sprintf("marshaling result: %v", err)), nil
-			}
-
-			return mcp.NewToolResultText(string(out)), nil
-		},
-	)
-}
+				return mcp.NewToolResultE
