@@ -14,6 +14,7 @@ import (
 func registerDatasourceTools(s *server.MCPServer, client *GrafanaClient) {
 	registerListDatasources(s, client)
 	registerGetDatasourceByName(s, client)
+	registerGetDatasourceByUID(s, client)
 }
 
 // registerListDatasources registers a tool to list all configured datasources.
@@ -62,6 +63,41 @@ func registerGetDatasourceByName(s *server.MCPServer, client *GrafanaClient) {
 			resp, err := client.Datasources.GetDataSourceByName(params)
 			if err != nil {
 				return mcp.NewToolResultError(fmt.Sprintf("failed to get datasource %q: %s", name, err)), nil
+			}
+
+			result, err := json.Marshal(resp.Payload)
+			if err != nil {
+				return mcp.NewToolResultError(fmt.Sprintf("failed to marshal datasource: %s", err)), nil
+			}
+
+			return mcp.NewToolResultText(string(result)), nil
+		},
+	)
+}
+
+// registerGetDatasourceByUID registers a tool to retrieve a specific datasource by UID.
+// Added this because I often know the UID from dashboard JSON and it's faster than listing all.
+func registerGetDatasourceByUID(s *server.MCPServer, client *GrafanaClient) {
+	s.AddTool(
+		mcp.NewTool(
+			"get_datasource_by_uid",
+			mcp.WithDescription("Get a datasource by its UID"),
+			mcp.WithString(
+				"uid",
+				mcp.Required(),
+				mcp.Description("The UID of the datasource to retrieve"),
+			),
+		),
+		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+			uid, ok := req.Params.Arguments["uid"].(string)
+			if !ok || uid == "" {
+				return mcp.NewToolResultError("uid is required"), nil
+			}
+
+			params := datasources.NewGetDataSourceByUIDParams().WithUID(uid)
+			resp, err := client.Datasources.GetDataSourceByUID(params)
+			if err != nil {
+				return mcp.NewToolResultError(fmt.Sprintf("failed to get datasource with uid %q: %s", uid, err)), nil
 			}
 
 			result, err := json.Marshal(resp.Payload)
