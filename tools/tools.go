@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
@@ -23,11 +24,14 @@ type GrafanaClient struct {
 }
 
 // NewGrafanaClient creates a new GrafanaClient with the provided base URL and API key.
+// Uses a 30-second timeout by default to avoid hanging on slow Grafana instances.
 func NewGrafanaClient(baseURL, apiKey string) *GrafanaClient {
 	return &GrafanaClient{
-		BaseURL:    strings.TrimRight(baseURL, "/"),
-		APIKey:     apiKey,
-		HTTPClient: &http.Client{},
+		BaseURL: strings.TrimRight(baseURL, "/"),
+		APIKey:  apiKey,
+		HTTPClient: &http.Client{
+			Timeout: 30 * time.Second,
+		},
 	}
 }
 
@@ -84,63 +88,6 @@ func registerSearchDashboards(s *server.MCPServer, client *GrafanaClient) {
 			resp, err := client.get(ctx, "/api/search", params)
 			if err != nil {
 				return mcp.NewToolResultError(fmt.Sprintf("searching dashboards: %v", err)), nil
-			}
-			defer resp.Body.Close()
-
-			var result interface{}
-			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return mcp.NewToolResultError(fmt.Sprintf("decoding response: %v", err)), nil
-			}
-
-			data, _ := json.MarshalIndent(result, "", "  ")
-			return mcp.NewToolResultText(string(data)), nil
-		},
-	)
-}
-
-// registerGetDashboard registers the get_dashboard tool.
-func registerGetDashboard(s *server.MCPServer, client *GrafanaClient) {
-	s.AddTool(
-		mcp.NewTool("get_dashboard",
-			mcp.WithDescription("Retrieve a Grafana dashboard by its UID."),
-			mcp.WithString("uid",
-				mcp.Description("The unique identifier (UID) of the dashboard."),
-				mcp.Required(),
-			),
-		),
-		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			uid, ok := req.Params.Arguments["uid"].(string)
-			if !ok || uid == "" {
-				return mcp.NewToolResultError("uid is required"), nil
-			}
-
-			resp, err := client.get(ctx, fmt.Sprintf("/api/dashboards/uid/%s", uid), nil)
-			if err != nil {
-				return mcp.NewToolResultError(fmt.Sprintf("getting dashboard: %v", err)), nil
-			}
-			defer resp.Body.Close()
-
-			var result interface{}
-			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-				return mcp.NewToolResultError(fmt.Sprintf("decoding response: %v", err)), nil
-			}
-
-			data, _ := json.MarshalIndent(result, "", "  ")
-			return mcp.NewToolResultText(string(data)), nil
-		},
-	)
-}
-
-// registerListDataSources registers the list_datasources tool.
-func registerListDataSources(s *server.MCPServer, client *GrafanaClient) {
-	s.AddTool(
-		mcp.NewTool("list_datasources",
-			mcp.WithDescription("List all configured data sources in Grafana."),
-		),
-		func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-			resp, err := client.get(ctx, "/api/datasources", nil)
-			if err != nil {
-				return mcp.NewToolResultError(fmt.Sprintf("listing datasources: %v", err)), nil
 			}
 			defer resp.Body.Close()
 
