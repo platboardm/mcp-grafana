@@ -77,6 +77,8 @@ func registerGetDatasourceByName(s *server.MCPServer, client *GrafanaClient) {
 
 // registerGetDatasourceByUID registers a tool to retrieve a specific datasource by UID.
 // Added this because I often know the UID from dashboard JSON and it's faster than listing all.
+// Note: datasource UIDs are stable across Grafana restarts, unlike numeric IDs which can change
+// when datasources are deleted and recreated. Prefer UIDs for any persistent references.
 func registerGetDatasourceByUID(s *server.MCPServer, client *GrafanaClient) {
 	s.AddTool(
 		mcp.NewTool(
@@ -97,7 +99,7 @@ func registerGetDatasourceByUID(s *server.MCPServer, client *GrafanaClient) {
 			params := datasources.NewGetDataSourceByUIDParams().WithUID(uid)
 			resp, err := client.Datasources.GetDataSourceByUID(params)
 			if err != nil {
-				return mcp.NewToolResultError(fmt.Sprintf("failed to get datasource with uid %q: %s", uid, err)), nil
+				return mcp.NewToolResultError(fmt.Sprintf("failed to get datasource %q: %s", uid, err)), nil
 			}
 
 			result, err := json.Marshal(resp.Payload)
