@@ -80,6 +80,8 @@ func registerGetDatasourceByName(s *server.MCPServer, client *GrafanaClient) {
 // Note: datasource UIDs are stable across Grafana restarts, unlike numeric IDs which can change
 // when datasources are deleted and recreated. Prefer UIDs for any persistent references.
 // Tip: you can find the UID in the datasource settings URL: /datasources/edit/<uid>
+// Tip: the UID is also visible in the datasource JSON model under the "uid" field, and in
+// panel targets as "datasource.uid" - handy when debugging dashboard JSON by hand.
 func registerGetDatasourceByUID(s *server.MCPServer, client *GrafanaClient) {
 	s.AddTool(
 		mcp.NewTool(
