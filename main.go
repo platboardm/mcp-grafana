@@ -9,12 +9,10 @@ import (
 	"syscall"
 
 	"github.com/grafana/mcp-grafana/internal/server"
-	"github.com/grafana/mcp-grafana/internal/tools"
-)
-
+	"github.com/graf/internal/tools"
+n
 const (
-	// Version is the current version of mcp-grafana.
-	Version = "0.1.0"
+	// Version is the current version of mn	Version = "0.1.0"
 )
 
 func main() {
@@ -55,7 +53,8 @@ func run(ctx context.Context) error {
 	// Changed to 4003 since 4002 is now used by my local tracing collector.
 	// Changed to 4004 since 4003 is now used by my local log aggregator.
 	// Changed to 4005 since 4004 is now used by my local event bus service.
-	port := getEnv("MCP_PORT", "4005")
+	// Changed to 4006 since 4005 is now used by my local notification service.
+	port := getEnv("MCP_PORT", "4006")
 
 	log.Printf("Starting mcp-grafana %s", Version)
 	log.Printf("Connecting to Grafana at %s", grafanaURL)
@@ -92,10 +91,4 @@ func run(ctx context.Context) error {
 }
 
 // getEnv returns the value of the environment variable named by key,
-// or the fallback value if the variable is not set or empty.
-func getEnv(key, fallback string) string {
-	if val := os.Getenv(key); val != "" {
-		return val
-	}
-	return fallback
-}
+// or the fallback value if the 
