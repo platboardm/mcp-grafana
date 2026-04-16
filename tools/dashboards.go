@@ -76,7 +76,15 @@ func registerListDashboards(s *server.MCPServer, c *GrafanaClient) {
 		}
 
 		if len(results) == 0 {
-			return mcp.NewToolResultText("No dashboards found."), nil
+			// Return a clearer message that includes any active filters, helpful for debugging
+			msg := "No dashboards found"
+			if query != "" {
+				msg += fmt.Sprintf(" matching query %q", query)
+			}
+			if folderUID != "" {
+				msg += fmt.Sprintf(" in folder %q", folderUID)
+			}
+			return mcp.NewToolResultText(msg + "."), nil
 		}
 
 		out, err := json.MarshalIndent(results, "", "  ")
