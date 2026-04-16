@@ -9,10 +9,12 @@ import (
 	"syscall"
 
 	"github.com/grafana/mcp-grafana/internal/server"
-	"github.com/graf/internal/tools"
-n
+	"github.com/grafana/mcp-grafana/internal/tools"
+)
+
 const (
-	// Version is the current version of mn	Version = "0.1.0"
+	// Version is the current version of mcp-grafana
+	Version = "0.1.0"
 )
 
 func main() {
@@ -91,4 +93,10 @@ func run(ctx context.Context) error {
 }
 
 // getEnv returns the value of the environment variable named by key,
-// or the fallback value if the 
+// or fallback if the variable is not set.
+func getEnv(key, fallback string) string {
+	if val, ok := os.LookupEnv(key); ok {
+		return val
+	}
+	return fallback
+}
